@@ -45,14 +45,35 @@ func main() {
 		return
 	}
 
-	fmt.Print("Введіть рядок для пошуку: ")
-	var searchTerm string
-	fmt.Scanln(&searchTerm)
+	cache := make(map[string][]string)
 
-	results := search(lines, searchTerm)
+	for {
+		fmt.Print("Введіть рядок для пошуку: ")
+		var searchTerm string
+		fmt.Scanln(&searchTerm)
 
-	fmt.Println("Знайдені рядки:")
-	for _, result := range results {
-		fmt.Println(result)
+		if cachedResults, found := cache[searchTerm]; found {
+			fmt.Println("Знайдені рядки (з кешу):")
+			for _, result := range cachedResults {
+				fmt.Println(result)
+			}
+		} else {
+			results := search(lines, searchTerm)
+			cache[searchTerm] = results
+			fmt.Println(cache)
+
+			fmt.Println("Знайдені рядки:")
+			for _, result := range results {
+				fmt.Println(result)
+			}
+		}
+
+		fmt.Print("Продовжити пошук? (так/ні): ")
+		var continueSearch string
+		fmt.Scanln(&continueSearch)
+
+		if strings.ToLower(continueSearch) != "так" {
+			break
+		}
 	}
 }
